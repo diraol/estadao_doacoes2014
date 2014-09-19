@@ -16,7 +16,7 @@ text {
 }
 
 rect {
-  fill: none;
+  fill: #CCC;
   stroke: #fff;
   storke-width: 2px;
 }
