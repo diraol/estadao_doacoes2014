@@ -8,6 +8,11 @@ var margin = {top: 20, right: 0, bottom: 0, left: 0},
     formatNumber = d3.format(",d"),
     transitioning;
 
+//Para Tooltip
+var div = d3.select("body").append("div")
+    .attr("class", "tooltip")
+      .style("opacity", 0);
+
 var x = d3.scale.linear()
     .domain([0, width])
     .range([0, width]);
@@ -100,7 +105,7 @@ d3.json("dados/doacoes2014.json", function(root) {
         .on("click", transition)
       .select("text")
         .text(name(d));
-            
+
     var g1 = svg.insert("g", ".grandparent")
         .datum(d)
         .attr("class", "depth");
@@ -123,9 +128,44 @@ d3.json("dados/doacoes2014.json", function(root) {
         .attr("class", "parent")
         .call(rect)
         .attr("nome",function (d) { return d.name})
-        .append("title")
-            .text(function(d) { return (d.name + ": R$ " + formatNumber(d.value)).replace(",",".").replace(",","."); })
-        
+        .on('mouseover', function(d) {
+            div.transition()
+                .duration(200)
+                .style("opacity", 1);
+            div.html((d.name + ":<br/>R$ " + formatNumber(d.value)).replace(",",".").replace(",",".") + "<br/>" + (parseInt(d.area * 1000)/10 + "%") + " de " + d.parent.name)
+                .style("left", (d3.event.pageX - 10) + "px")
+                .style("top", (d3.event.pageY - 28) + "px");
+        })
+        .on('touchstart', function(d) {
+            var t2 = d3.event.timeStamp,
+                t1 = $(this).data('lastTouch') || t2,
+                dt = t2 - t1,
+                fingers = d3.event.touches.length;
+            $(this).data('lastTouch',t2);
+            if (!dt || dt > 700 || fingers > 1) {
+                div.transition()
+                    .duration(200)
+                    .style("opacity", 1);
+                div.html((d.name + ":<br/>R$ " + formatNumber(d.value)).replace(",",".").replace(",",".") + "<br/>" + (parseInt(d.area * 1000)/10 + "%") + " de " + d.parent.name)
+                    .style("left", (d3.event.touches[0].pageX + 10) + "px")
+                    .style("top", (d3.event.touches[0].pageY - 60) + "px");
+                d3.event.preventDefault();
+            } else {
+                div.transition()
+                    .duration(800)
+                    .style("opacity", 0);
+            }
+        })
+        .on('mousemove', function(d) {
+            div.style("left", (d3.event.pageX - 10) + "px")
+                .style("top", (d3.event.pageY - 28) + "px");
+        })
+        .on("mouseout", function(d) {
+            div.transition()
+                .duration(500)
+                .style("opacity", 0);
+        });
+
 
         //aqui coloca o texto só se a área for grande o suficiente...
     g.append("text")
@@ -134,11 +174,15 @@ d3.json("dados/doacoes2014.json", function(root) {
         .style("font-size", function(d) { return Math.min((d.area+0.03)*300,80) + "px"; })
         .attr("width", function(d) { return $("rect[nome='"+d.name+"']").attr("width") })
         .call(text)
-        
-        
+
+
     function transition(d) {
       if (transitioning || !d) return;
       transitioning = true;
+
+      div.transition()
+        .duration(800)
+        .style("opacity", 0);
 
       var g2 = display(d),
           t1 = g1.transition().duration(750),
@@ -177,7 +221,7 @@ d3.json("dados/doacoes2014.json", function(root) {
     text.attr("x", function(d) { return x(d.x) + 6; })
         .attr("y", function(d) { return y(d.y) + 6; })
 
-/*    
+/*
         text.each(function() {
             var text = d3.select(this),
             words = text.text().split(/\s+/).reverse(),
@@ -197,7 +241,7 @@ d3.json("dados/doacoes2014.json", function(root) {
           console.log(tspan.text(),tspan[0][0].offsetWidth,width)
 
           if (tspan[0][0].offsetWidth > width) {
-          
+
             line.pop();
             tspan.text(line.join(" "));
             line = [word];
@@ -206,7 +250,7 @@ d3.json("dados/doacoes2014.json", function(root) {
             }
         });
         */
-        
+
   }
 
   function rect(rect) {

@@ -52,4 +52,24 @@ rect.child {
   fill: #7f8c8d;
 }
 
+div.tooltip {
+  position: absolute;
+  text-align: center;
+  width: auto;
+  height: 100px;
+  padding: 6px;
+  font: 14px Arial;
+  background: lightsteelblue;
+  border: 0px;
+  border-radius: 8px;
+  pointer-events: none;
+}
 
+svg * {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
