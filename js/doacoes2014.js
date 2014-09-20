@@ -1,9 +1,9 @@
 var tamanho = 0;
 
-var margin = {top: 20, right: 0, bottom: 0, left: 0},
+var margin = {top: 20, right: 0, bottom: 40, left: 0},
     //aspect = 400 / 950,
     width = $("#chart").width(),
-    height = $("#chart").height(), //width * aspect,
+    height = ($("#chart").height() - margin.bottom), //width * aspect,
     aspect = height / width,//height / width,
     formatNumber = d3.format(",d"),
     transitioning;
@@ -31,9 +31,9 @@ var svg = d3.select("#chart").append("svg")
     .attr("preserveAspectRatio", "xMidYMid")
     .attr("viewBox", "0 0 " + width + " " + height)
     .attr("width", width )
-    .attr("height", height)
+    .attr("height", height + margin.bottom)
   .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+    .attr("transform", "translate(" + margin.left + ",0)")
     .style("shape-rendering", "crispEdges");
 
 $(window).resize(function(){
