@@ -157,8 +157,8 @@ d3.json("dados/doacoes2014.json", function(root) {
             }
         })
         .on('mousemove', function(d) {
-            div.style("left", (d3.event.pageX - 10) + "px")
-                .style("top", (d3.event.pageY - 28) + "px");
+            div.style("left", (d3.event.pageX + 10) + "px")
+                .style("top", (d3.event.pageY - 60) + "px");
         })
         .on("mouseout", function(d) {
             div.transition()
