@@ -278,8 +278,8 @@ d3.json("dados/doacoes2014.json", function(root) {
         .attr("width", function(d) { return x(d.x + d.dx) - x(d.x); })
         .attr("height", function(d) { return y(d.y + d.dy) - y(d.y); })
         //cor diferente para quem recebe
-        .style("fill",function(d) { 
-            cor = "8F5959";
+        .style("fill",function(d) {
+            cor = "#8F5959";
             local = $("text:contains('VOLTAR')").text()
             if (local.indexOf("Doadores/Empresas/Grandes doadores/") > 0) {
                 return cor
@@ -292,7 +292,7 @@ d3.json("dados/doacoes2014.json", function(root) {
             } else if (local.indexOf("Doadores/Fundo") > 0) {
                 return cor
             }
-        }) 
+        })
   }
 
   function name(d) {
