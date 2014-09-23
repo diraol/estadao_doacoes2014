@@ -1,3 +1,7 @@
+.legenda-topo {
+    padding-top: 20px;
+}
+
 #chart {
   width: 100%;
   height: 80%;
@@ -44,7 +48,7 @@ rect.child {
 }
 
 .children rect.parent {
-  fill: #598F8F;
+  fill: #27ae60;
   fill-opacity: .7;
 }
 
