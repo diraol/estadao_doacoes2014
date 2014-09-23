@@ -200,13 +200,13 @@ d3.json("dados/doacoes2014.json", function(root) {
 
       // Fade-in entering text.
       g2.selectAll("text").style("fill-opacity", 0);
-      
+
       // Transition to the new view.
       t1.selectAll("text").call(text).style("fill-opacity", 0);
       t2.selectAll("text").call(text).style("fill-opacity", 1);
       t1.selectAll("rect").call(rect);
       t2.selectAll("rect").call(rect);
-      
+
       // Remove the old node when the transition is finished.
       t1.remove().each("end", function() {
         svg.style("shape-rendering", "crispEdges");
@@ -223,53 +223,20 @@ d3.json("dados/doacoes2014.json", function(root) {
             $("#empresas").hide()
             $("#pessoas").hide()
         }
-        
+
         if ($("text:contains('VOLTAR')").text() == "VOLTAR - Doadores/Empresas/Grandes doadores") {
             $("#grandes").show()
         } else{
             $("#grandes").hide()
         }
-      });     
-    
-            
+      });
     }
-
     return g;
   }
 
   function text(text) {
     text.attr("x", function(d) { return x(d.x) + 6; })
         .attr("y", function(d) { return y(d.y) + 6; })
-
- /*   text.each(function(d) {
-        if(d.area > 0.003) {
-            var texto = d3.select(this),
-            words = d.name.split(/\s+/).reverse(),
-            word,
-            line = [],
-            lineNumber = 0,
-            lineHeight = 1.1, // ems
-            pos_y = y(d.y)+6,
-            pos_x = x(d.x)+6,
-            dy = parseFloat(texto.attr("dy")),
-            tspan = texto.text(null).append("tspan").attr("y",pos_y).attr("x",pos_x).attr("dy", dy + "em"),
-            width = parseFloat($("rect[id='"+d.name+"']").attr("width"))
-        while (word = words.pop()) {
-          line.push(word);
-          tspan.text(line.join(" "));
-    //          console.log(tspan.text(),tspan[0][0].offsetWidth,width)
-          if (tspan[0][0].offsetWidth > width) {
-
-            line.pop();
-            tspan.text(line.join(" "));
-            line = [word];
-            tspan = texto.append("tspan").attr("y",pos_y).attr("x",pos_x).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
-                }
-            }
-
-        }
-    });*/
-
   }
 
   function rect(rect) {
