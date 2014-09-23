@@ -211,8 +211,8 @@ d3.json("dados/doacoes2014.json", function(root) {
       t1.remove().each("end", function() {
         svg.style("shape-rendering", "crispEdges");
         transitioning = false;
+        arrumaTexto();
       });
-      arrumaTexto();
       //mostra o div de doadores se estiver nessa tela
       if ($("text:contains('VOLTAR')").text() == "VOLTAR - Doadores/Pessoas") {
           $("#empresas").hide()
