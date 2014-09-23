@@ -211,25 +211,25 @@ d3.json("dados/doacoes2014.json", function(root) {
       t1.remove().each("end", function() {
         svg.style("shape-rendering", "crispEdges");
         transitioning = false;
-        arrumaTexto();
-        //mostra o div de doadores se estiver nessa tela
-        if ($("text:contains('VOLTAR')").text() == "VOLTAR - Doadores/Pessoas") {
-            $("#empresas").hide()
-            $("#pessoas").show()
-        } else if ($("text:contains('VOLTAR')").text() == "VOLTAR - Doadores/Empresas") {
-            $("#empresas").show()
-            $("#pessoas").hide()
-        } else {
-            $("#empresas").hide()
-            $("#pessoas").hide()
-        }
-
-        if ($("text:contains('VOLTAR')").text() == "VOLTAR - Doadores/Empresas/Grandes doadores") {
-            $("#grandes").show()
-        } else{
-            $("#grandes").hide()
-        }
       });
+      arrumaTexto();
+      //mostra o div de doadores se estiver nessa tela
+      if ($("text:contains('VOLTAR')").text() == "VOLTAR - Doadores/Pessoas") {
+          $("#empresas").hide()
+          $("#pessoas").show()
+      } else if ($("text:contains('VOLTAR')").text() == "VOLTAR - Doadores/Empresas") {
+          $("#empresas").show()
+          $("#pessoas").hide()
+      } else {
+          $("#empresas").hide()
+          $("#pessoas").hide()
+      }
+
+      if ($("text:contains('VOLTAR')").text() == "VOLTAR - Doadores/Empresas/Grandes doadores") {
+          $("#grandes").show()
+      } else{
+          $("#grandes").hide()
+      }
     }
     return g;
   }
@@ -240,26 +240,24 @@ d3.json("dados/doacoes2014.json", function(root) {
   }
 
   function rect(rect) {
+    var local = $("text:contains('VOLTAR')").text(),
+        cor = "#8F5959",
+        retornar = false;
+     if ((local.indexOf("Doadores/Empresas/Grandes doadores/") > 0) ||
+         (local.indexOf("Doadores/Pessoas/Grandes doadores/") > 0) ||
+         (local.indexOf("Doadores/Empresas/Pequenos doadores") > 0) ||
+         (local.indexOf("Doadores/Pessoas/Pequenos doadores") > 0) ||
+         (local.indexOf("Doadores/Fundo") > 0)
+        ) {
+        retornar = true;
+    }
+
     rect.attr("x", function(d) { return x(d.x); })
         .attr("y", function(d) { return y(d.y); })
         .attr("width", function(d) { return x(d.x + d.dx) - x(d.x); })
         .attr("height", function(d) { return y(d.y + d.dy) - y(d.y); })
         //cor diferente para quem recebe
-        .style("fill",function(d) {
-            cor = "#8F5959";
-            local = $("text:contains('VOLTAR')").text()
-            if (local.indexOf("Doadores/Empresas/Grandes doadores/") > 0) {
-                return cor
-            } else if (local.indexOf("Doadores/Pessoas/Grandes doadores/") > 0) {
-                return cor
-            } else if (local.indexOf("Doadores/Empresas/Pequenos doadores") > 0) {
-                return cor
-            } else if (local.indexOf("Doadores/Pessoas/Pequenos doadores") > 0) {
-                return cor
-            } else if (local.indexOf("Doadores/Fundo") > 0) {
-                return cor
-            }
-        })
+        .style("fill",function() { if (retornar) return cor; })
   }
 
   function name(d) {
