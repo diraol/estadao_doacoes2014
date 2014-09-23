@@ -44,7 +44,7 @@ rect.child {
 }
 
 .children rect.parent {
-  fill: #7f8c8d;
+  fill: #598F8F;
   fill-opacity: .7;
 }
 
@@ -56,7 +56,7 @@ div.tooltip {
   position: absolute;
   text-align: center;
   width: auto;
-  height: 100px;
+  height: auto;
   padding: 6px;
   font: 14px Arial;
   background: lightsteelblue;

@@ -3,7 +3,7 @@ var tamanho = 0;
 var margin = {top: 20, right: 0, bottom: 40, left: 0},
     //aspect = 400 / 950,
     width = $("#chart").width(),
-    height = ($("#chart").height() - margin.bottom), //width * aspect,
+    height = ($("#chart").height()-margin.bottom/3), //width * aspect,
     aspect = height / width,//height / width,
     formatNumber = d3.format(",d"),
     transitioning;
@@ -104,7 +104,7 @@ d3.json("dados/doacoes2014.json", function(root) {
         .datum(d.parent)
         .on("click", transition)
       .select("text")
-        .text(name(d));
+        .text("VOLTAR - "+name(d).replace(".","/"));
 
     var g1 = svg.insert("g", ".grandparent")
         .datum(d)
@@ -127,14 +127,15 @@ d3.json("dados/doacoes2014.json", function(root) {
     g.append("rect")
         .attr("class", "parent")
         .call(rect)
-        .attr("nome",function (d) { return d.name})
+        .attr("id",function (d) { return d.name})
         .on('mouseover', function(d) {
             div.transition()
                 .duration(200)
                 .style("opacity", 1);
-            div.html((d.name + ":<br/>R$ " + formatNumber(d.value)).replace(",",".").replace(",",".") + "<br/>" + (parseInt(d.area * 1000)/10 + "%") + " de " + d.parent.name)
+            div.html(("<b>"+d.name + "</b><br/>R$ " + formatNumber(d.value)).replace(",",".").replace(",",".") + "<br/>" + (parseInt(d.area * 1000)/10 + "%") + " de " + d.parent.name)
                 .style("left", (d3.event.pageX - 10) + "px")
-                .style("top", (d3.event.pageY - 28) + "px");
+                .style("top", (d3.event.pageY - 28) + "px")
+
         })
         .on('touchstart', function(d) {
             var t2 = d3.event.timeStamp,
@@ -171,10 +172,9 @@ d3.json("dados/doacoes2014.json", function(root) {
     g.append("text")
         .attr("dy", ".75em")
         .text(function(d) { if(d.area > 0.003) return d.name; else return ""; })
-        .style("font-size", function(d) { return Math.min((d.area+0.03)*300,80) + "px"; })
+        .style("font-size", function(d) { return (Math.min((d.area+0.03)*25,10)*window.width/1718) + "em"; })
         .attr("width", function(d) { return $("rect[nome='"+d.name+"']").attr("width") })
         .call(text)
-
 
     function transition(d) {
       if (transitioning || !d) return;
@@ -200,18 +200,38 @@ d3.json("dados/doacoes2014.json", function(root) {
 
       // Fade-in entering text.
       g2.selectAll("text").style("fill-opacity", 0);
-
+      
       // Transition to the new view.
       t1.selectAll("text").call(text).style("fill-opacity", 0);
       t2.selectAll("text").call(text).style("fill-opacity", 1);
       t1.selectAll("rect").call(rect);
       t2.selectAll("rect").call(rect);
-
+      
       // Remove the old node when the transition is finished.
       t1.remove().each("end", function() {
         svg.style("shape-rendering", "crispEdges");
         transitioning = false;
-      });
+        arrumaTexto();
+        //mostra o div de doadores se estiver nessa tela
+        if ($("text:contains('VOLTAR')").text() == "VOLTAR - Doadores/Pessoas") {
+            $("#empresas").hide()
+            $("#pessoas").show()
+        } else if ($("text:contains('VOLTAR')").text() == "VOLTAR - Doadores/Empresas") {
+            $("#empresas").show()
+            $("#pessoas").hide()
+        } else {
+            $("#empresas").hide()
+            $("#pessoas").hide()
+        }
+        
+        if ($("text:contains('VOLTAR')").text() == "VOLTAR - Doadores/Empresas/Grandes doadores") {
+            $("#grandes").show()
+        } else{
+            $("#grandes").hide()
+        }
+      });     
+    
+            
     }
 
     return g;
@@ -221,35 +241,34 @@ d3.json("dados/doacoes2014.json", function(root) {
     text.attr("x", function(d) { return x(d.x) + 6; })
         .attr("y", function(d) { return y(d.y) + 6; })
 
-/*
-        text.each(function() {
-            var text = d3.select(this),
-            words = text.text().split(/\s+/).reverse(),
+ /*   text.each(function(d) {
+        if(d.area > 0.003) {
+            var texto = d3.select(this),
+            words = d.name.split(/\s+/).reverse(),
             word,
             line = [],
             lineNumber = 0,
             lineHeight = 1.1, // ems
-            y = text[0][0].y.baseVal[0].value,
-            x = text[0][0].x.baseVal[0].value,
-            dy = parseFloat(text.attr("dy")),
-            tspan = text.text(null).append("tspan").attr("y",y).attr("x",x).attr("dy", dy + "em")
-            width = parseFloat(text.attr("width"))
-            console.log(text[0][0])
+            pos_y = y(d.y)+6,
+            pos_x = x(d.x)+6,
+            dy = parseFloat(texto.attr("dy")),
+            tspan = texto.text(null).append("tspan").attr("y",pos_y).attr("x",pos_x).attr("dy", dy + "em"),
+            width = parseFloat($("rect[id='"+d.name+"']").attr("width"))
         while (word = words.pop()) {
           line.push(word);
           tspan.text(line.join(" "));
-          console.log(tspan.text(),tspan[0][0].offsetWidth,width)
-
+    //          console.log(tspan.text(),tspan[0][0].offsetWidth,width)
           if (tspan[0][0].offsetWidth > width) {
 
             line.pop();
             tspan.text(line.join(" "));
             line = [word];
-            tspan = text.append("tspan").attr("y",y).attr("x",x).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
+            tspan = texto.append("tspan").attr("y",pos_y).attr("x",pos_x).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
                 }
             }
-        });
-        */
+
+        }
+    });*/
 
   }
 
@@ -258,12 +277,62 @@ d3.json("dados/doacoes2014.json", function(root) {
         .attr("y", function(d) { return y(d.y); })
         .attr("width", function(d) { return x(d.x + d.dx) - x(d.x); })
         .attr("height", function(d) { return y(d.y + d.dy) - y(d.y); })
+        //cor diferente para quem recebe
+        .style("fill",function(d) { 
+            cor = "8F5959";
+            local = $("text:contains('VOLTAR')").text()
+            if (local.indexOf("Doadores/Empresas/Grandes doadores/") > 0) {
+                return cor
+            } else if (local.indexOf("Doadores/Pessoas/Grandes doadores/") > 0) {
+                return cor
+            } else if (local.indexOf("Doadores/Empresas/Pequenos doadores") > 0) {
+                return cor
+            } else if (local.indexOf("Doadores/Pessoas/Pequenos doadores") > 0) {
+                return cor
+            } else if (local.indexOf("Doadores/Fundo") > 0) {
+                return cor
+            }
+        }) 
   }
 
   function name(d) {
     return d.parent
-        ? name(d.parent) + "." + d.name
+        ? name(d.parent) + "/" + d.name
         : d.name;
   }
 });
 
+function arrumaTexto() {
+    text = $("text")
+    text.each(function(d) {
+        var elemento = $(this),
+        nome = elemento.text(),
+        pos_y = (elemento.attr("y")),
+        pos_x = (elemento.attr("x")),
+        dy = parseFloat(elemento.attr("dy"))
+        if(nome != "" && nome.indexOf("VOLTAR") < 0) {
+            var texto = d3.select(this),
+            words = nome.split(/\s+/).reverse(),
+            word,
+            line = [],
+            lineNumber = 0,
+            lineHeight = 1.1, // ems
+            tspan = texto.text(null).append("tspan").attr("y",pos_y).attr("x",pos_x).attr("dy", dy + "em"),
+            width = parseFloat($("rect[id='"+nome+"']").attr("width"))
+            while (word = words.pop()) {
+                line.push(word);
+                tspan.text(line.join(" "));
+                if (tspan[0][0].offsetWidth > width) {
+                    line.pop();
+                    tspan.text(line.join(" "));
+                    line = [word];
+                    tspan = texto.append("tspan").attr("y",pos_y).attr("x",pos_x).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
+                }
+            }
+        }
+    }
+);}
+
+$("#empresas").hide()
+$("#pessoas").hide()
+$("#grandes").hide()
