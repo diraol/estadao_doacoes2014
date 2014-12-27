@@ -60,6 +60,7 @@ d3.json("dados/doacoes2014.json", function(root) {
   accumulate(root);
   layout(root);
   display(root);
+  setTimeout(arrumaTexto, 1200);
 
   function initialize(root) {
     root.x = root.y = 0;
@@ -306,4 +307,3 @@ $("#empresas").hide()
 $("#pessoas").hide()
 $("#grandes").hide()
 
-setTimeout(arrumaTexto, 1200);
