@@ -103,6 +103,7 @@ d3.json("dados/doacoes2014.json", function(root) {
     grandparent
         .datum(d.parent)
         .on("click", transition)
+      
       .select("text")
         .text("VOLTAR - "+name(d).replace(".","/"));
 
@@ -116,8 +117,9 @@ d3.json("dados/doacoes2014.json", function(root) {
 
     g.filter(function(d) { return d._children; })
         .classed("children", true)
-        .on("click", transition);
-
+        .on("click", transition)
+      
+        
     g.selectAll(".child")
         .data(function(d) { return d._children || [d]; })
       .enter().append("rect")
@@ -213,6 +215,8 @@ d3.json("dados/doacoes2014.json", function(root) {
         transitioning = false;
         arrumaTexto();
       });
+      
+      
       //mostra o div de doadores se estiver nessa tela
       if ($("text:contains('VOLTAR')").text() == "VOLTAR - Doadores/Pessoas") {
           $("#empresas").hide()
@@ -301,3 +305,5 @@ function arrumaTexto() {
 $("#empresas").hide()
 $("#pessoas").hide()
 $("#grandes").hide()
+
+setTimeout(arrumaTexto, 1200);
